@@ -1,4 +1,8 @@
-    
+from gensim.summarization import summarize, keywords
+from summarizer import Summarizer
+from rake_nltk import Metric, Rake
+
+   
 def load_data(filename='data.txt'):
     with open(filename, "r", encoding='utf-8') as file:
         data = file.read()
@@ -21,14 +25,15 @@ def remove_paragraf_and_toLower(text):
     text = ' '.join([k for k in text.split(" ") if k])
     return text
 
-# def BERT_Summarizer(ttext):
-#     # https: // github.com / dmmiller612 / bert - extractive - summarizer
-#     # pip install bert-extractive-summarizer
-#     # pip install ...etc
-#     model = Summarizer()
-#     result = model(ttext, min_length=60)
-#     full = ''.join(result)
-#     return full
+def BERT_Summarizer(text):
+    # https://github.com/dmmiller612/bert-extractive-summarizer
+    # pip install bert-extractive-summarizer
+    # pip install ...etc
+    from summarizer import Summarizer
+    model = Summarizer()
+    result = model(text, min_length=60)
+    full = ''.join(result)
+    return full
 
 # def remove_stopwords(self):
 #     str2 = ''
@@ -75,4 +80,6 @@ if __name__ == '__main__':
     display(text)
     display(punctuation)
     text = remove_paragraf_and_toLower(text)
+    display(text)
+    text = BERT_Summarizer(text)
     display(text)
