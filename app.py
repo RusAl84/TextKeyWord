@@ -1,8 +1,7 @@
-from gensim.summarization import summarize, keywords
+# from gensim.summarization import summarize
 from summarizer import Summarizer
 from rake_nltk import Metric, Rake
 
-   
 def load_data(filename='data.txt'):
     with open(filename, "r", encoding='utf-8') as file:
         data = file.read()
@@ -31,9 +30,30 @@ def BERT_Summarizer(text):
     # pip install ...etc
     from summarizer import Summarizer
     model = Summarizer()
-    result = model(text, min_length=60)
-    full = ''.join(result)
-    return full
+    result = model(text, min_length=20)
+    model = Summarizer()
+    # result = model(text, ratio=0.2)  # Specified with ratio
+    result = model(text, num_sentences=3)
+    # full = ''.join(result)
+    return result
+
+# def TextRank_Summarizer(ttext):
+#     # pip install gensim==3.8.3
+#     # As per Gensim’s Github changelog 188, 
+#     # gensim.summarization module has been removed in versions Gensim 4.x
+#     return summarize(str(ttext))
+
+def Rake_Summarizer(text):
+    
+    r = Rake(language="russian")
+    r.extract_keywords_from_text(text)
+    mas = r.get_ranked_phrases()
+    set2 = set()
+    for item in mas:
+        if not "nan" in str(item).replace(" nan ", " "):
+            set2.add(str(item).replace(" nan ", " "))
+    mas = list(set2)
+    return str(mas)
 
 # def remove_stopwords(self):
 #     str2 = ''
@@ -53,33 +73,22 @@ def BERT_Summarizer(text):
 #         str2 = str2 + "\n" + str3
 #     self.data = str2
 
-# def TextRank_Summarizer(ttext):
-#     # pip install gensim
-#     return summarize(str(ttext))
-
-# def Rake_Summarizer(ttext):
-#     r = Rake(language="russian")
-#     r.extract_keywords_from_text(ttext)
-#     mas = r.get_ranked_phrases()
-#     set2 = set()
-#     for item in mas:
-#         if not "nan" in str(item).replace(" nan ", " "):
-#             set2.add(str(item).replace(" nan ", " "))
-#     mas = list(set2)
-#     return str(mas)
-
 if __name__ == '__main__':
     text=load_data()
     display(text)
-    digit=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-    import string
-    punctuation = list(string.punctuation)
-    punctuation_extend=['«', '»', '–', "-", "—", "\""]
-    patern = digit + punctuation_extend + punctuation
-    text = remove_from_patterns(text, patern)
-    display(text)
-    display(punctuation)
-    text = remove_paragraf_and_toLower(text)
-    display(text)
-    text = BERT_Summarizer(text)
-    display(text)
+    # digit=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    # import string
+    # punctuation = list(string.punctuation)
+    # punctuation_extend=['«', '»', '–', "-", "—", "\""]
+    # patern = digit + punctuation_extend + punctuation
+    # text = remove_from_patterns(text, patern)
+    # display(text)
+    # display(punctuation)
+    # text = remove_paragraf_and_toLower(text)
+    # display(text)
+    keyWords = BERT_Summarizer(text)
+    display(keyWords)
+    # keyWords = TextRank_Summarizer(text)
+    # display(keyWords)
+    keyWords = Rake_Summarizer(text)
+    display(keyWords)
