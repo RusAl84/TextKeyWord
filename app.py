@@ -1,6 +1,8 @@
-# from gensim.summarization import summarize
+
 from summarizer import Summarizer
 from rake_nltk import Metric, Rake
+import nltk
+
 
 def load_data(filename='data.txt'):
     with open(filename, "r", encoding='utf-8') as file:
@@ -37,31 +39,39 @@ def BERT_Summarizer(text):
     # full = ''.join(result)
     return result
 
+def Rake_Summarizer(text):
+    
+    r = Rake(language="russian")
+    r.extract_keywords_from_text(text)
+    mas = r.get_ranked_phrases()
+    # set2 = set()
+    # for item in mas:
+    #     if not "nan" in str(item).replace(" nan ", " "):
+    #         set2.add(str(item).replace(" nan ", " "))
+    # mas = list(set2)
+    return mas
+
+def nltk_download():
+    nltk.download('stopwords')
+    nltk.download('punkt')
+
+def remove_stopwords(self):
+    str2 = ''
+    russian_stopwords = nltk.corpus.words("russian")
+    for word in self.data.split():
+        if word not in (russian_stopwords):
+            str2 = str2 + " " + word
+    self.data = str2
+
+# from gensim.summarization import summarize 
 # def TextRank_Summarizer(ttext):
 #     # pip install gensim==3.8.3
 #     # As per Gensim’s Github changelog 188, 
 #     # gensim.summarization module has been removed in versions Gensim 4.x
 #     return summarize(str(ttext))
 
-def Rake_Summarizer(text):
-    
-    r = Rake(language="russian")
-    r.extract_keywords_from_text(text)
-    mas = r.get_ranked_phrases()
-    set2 = set()
-    for item in mas:
-        if not "nan" in str(item).replace(" nan ", " "):
-            set2.add(str(item).replace(" nan ", " "))
-    mas = list(set2)
-    return str(mas)
 
-# def remove_stopwords(self):
-#     str2 = ''
-#     russian_stopwords = stopwords.words("russian")
-#     for word in self.data.split():
-#         if word not in (russian_stopwords):
-#             str2 = str2 + " " + word
-#     self.data = str2
+
 
 # def remove_short_words(self, length=1):
 #     str2 = ''
@@ -86,9 +96,10 @@ if __name__ == '__main__':
     # display(punctuation)
     # text = remove_paragraf_and_toLower(text)
     # display(text)
-    keyWords = BERT_Summarizer(text)
-    display(keyWords)
+    # keyWords = BERT_Summarizer(text)
+    # display(keyWords)
     # keyWords = TextRank_Summarizer(text)
     # display(keyWords)
+    nltk_download()
     keyWords = Rake_Summarizer(text)
     display(keyWords)
