@@ -1,6 +1,4 @@
 
-from summarizer import Summarizer
-from rake_nltk import Metric, Rake
 import nltk
 
 
@@ -34,22 +32,37 @@ def BERT_Summarizer(text):
     model = Summarizer()
     result = model(text, min_length=20)
     model = Summarizer()
-    # result = model(text, ratio=0.2)  # Specified with ratio
+    result = model(text, ratio=0.2)  # Specified with ratio
+    print("BERT_Summarizer ratio=0.2")
+    display(result)
     result = model(text, num_sentences=3)
-    # full = ''.join(result)
-    return result
+    print("BERT_Summarizer num_sentences=3")
+    display(result)
+    # pip install -U sentence-transformers
+    from summarizer.sbert import SBertSummarizer
+    model = SBertSummarizer('paraphrase-MiniLM-L6-v2')
+    result = model(text, num_sentences=3)
+    print("SBertSummarizer num_sentences=3")
+    display(result)
 
 def Rake_Summarizer(text):
-    
+    from rake_nltk import Metric, Rake
     r = Rake(language="russian")
     r.extract_keywords_from_text(text)
-    mas = r.get_ranked_phrases()
-    # set2 = set()
-    # for item in mas:
-    #     if not "nan" in str(item).replace(" nan ", " "):
-    #         set2.add(str(item).replace(" nan ", " "))
-    # mas = list(set2)
-    return mas
+    keywords = r.get_ranked_phrases()[:15]
+    print("Rake_Summarizer 0:15")
+    display(keywords)
+
+def Yake_Summarizer(text):
+    import yake
+    language = "ru"
+    max_ngram_size = 3
+    deduplication_threshold = 0.9
+    numOfKeywords = 20
+    custom_kw_extractor = yake.KeywordExtractor(lan=language, n=max_ngram_size, dedupLim=deduplication_threshold, top=numOfKeywords, features=None)
+    keywords = custom_kw_extractor.extract_keywords(text)
+    print("Yake_Summarizer")
+    display(keywords)
 
 def nltk_download():
     nltk.download('stopwords')
@@ -63,14 +76,12 @@ def remove_stopwords(self):
             str2 = str2 + " " + word
     self.data = str2
 
+# As per Gensim’s Github changelog 188, 
+# gensim.summarization module has been removed in versions Gensim 4.x
 # from gensim.summarization import summarize 
 # def TextRank_Summarizer(ttext):
 #     # pip install gensim==3.8.3
-#     # As per Gensim’s Github changelog 188, 
-#     # gensim.summarization module has been removed in versions Gensim 4.x
 #     return summarize(str(ttext))
-
-
 
 
 # def remove_short_words(self, length=1):
@@ -96,10 +107,9 @@ if __name__ == '__main__':
     # display(punctuation)
     # text = remove_paragraf_and_toLower(text)
     # display(text)
-    # keyWords = BERT_Summarizer(text)
-    # display(keyWords)
-    # keyWords = TextRank_Summarizer(text)
-    # display(keyWords)
     nltk_download()
-    keyWords = Rake_Summarizer(text)
-    display(keyWords)
+    BERT_Summarizer(text)
+    Rake_Summarizer(text)
+    Yake_Summarizer(text)
+
+    
