@@ -28,7 +28,9 @@ def BERT_Summarizer(text):
     # pip install ...etc
     from summarizer import Summarizer
     model = Summarizer()
-    result = model(text, min_length=20)
+    result = model(text, min_length=60)
+    print("BERT_Summarizer min_length=60")
+    display(result)
     model = Summarizer()
     result = model(text, ratio=0.2)  # Specified with ratio
     print("BERT_Summarizer ratio=0.2")
