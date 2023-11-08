@@ -1,6 +1,4 @@
-
 import nltk
-
 
 def load_data(filename='data.txt'):
     with open(filename, "r", encoding='utf-8') as file:
@@ -111,5 +109,3 @@ if __name__ == '__main__':
     BERT_Summarizer(text)
     Rake_Summarizer(text)
     Yake_Summarizer(text)
-
-    
