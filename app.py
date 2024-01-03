@@ -68,13 +68,24 @@ def nltk_download():
     nltk.download('stopwords')
     nltk.download('punkt')
 
-def remove_stopwords(self):
-    str2 = ''
-    russian_stopwords = nltk.corpus.words("russian")
-    for word in self.data.split():
-        if word not in (russian_stopwords):
-            str2 = str2 + " " + word
-    self.data = str2
+    
+def get_KeyBERT(text):
+    from keybert import KeyBERT
+    kw_model = KeyBERT()
+    # keywords = kw_model.extract_keywords(doc)
+    keywords = kw_model.extract_keywords(text, keyphrase_ngram_range=(1, 3), stop_words='english',
+                            use_maxsum=True, nr_candidates=20, top_n=10)
+    print("KeyBERT")
+    display(keywords)
+
+
+# def remove_stopwords():
+#     str2 = ''
+#     russian_stopwords = nltk.corpus.words("russian")
+#     for word in data.split():
+#         if word not in (russian_stopwords):
+#             str2 = str2 + " " + word
+#     data = str2
 
 # As per Gensim’s Github changelog 188, 
 # gensim.summarization module has been removed in versions Gensim 4.x
